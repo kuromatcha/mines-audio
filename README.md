@@ -1,4 +1,4 @@
-# mines-txt2voi
+# mines-tts
 
 ComfyUI text-to-speech workflows that clone a voice from a short recording: **Thai** with VoxCPM2 and the SiangTTS Thai LoRA, and **English** with IndexTTS-2. Both can pass the result through an RVC voice model.
 
