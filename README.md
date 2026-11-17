@@ -16,8 +16,8 @@ Tested on an RTX 5070 Ti (16 GB) with torch 2.12 + CUDA 13.0 on Windows. Model f
    - [TTS-Audio-Suite](https://github.com/diodiogod/TTS-Audio-Suite) (tested at `99f0873`; run its `install.py`)
 2. **Patches** (required, see below):
    ```
-   git -C custom_nodes/ComfyUI-VoxCPM2 apply path/to/mines-txt2voi/patches/ComfyUI-VoxCPM2.patch
-   git -C custom_nodes/TTS-Audio-Suite apply path/to/mines-txt2voi/patches/TTS-Audio-Suite.patch
+   git -C custom_nodes/ComfyUI-VoxCPM2 apply path/to/mines-tts/patches/ComfyUI-VoxCPM2.patch
+   git -C custom_nodes/TTS-Audio-Suite apply path/to/mines-tts/patches/TTS-Audio-Suite.patch
    ```
 3. **Models**:
    - VoxCPM2 → `models/tts/VoxCPM/VoxCPM2/` (`model.safetensors`, `audiovae.pth`) from [openbmb/VoxCPM2](https://huggingface.co/openbmb/VoxCPM2)
