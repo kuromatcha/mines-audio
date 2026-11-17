@@ -1,0 +1,19 @@
+# Model weights: too large for git
+*.safetensors
+*.ckpt
+*.pth
+*.pt
+*.bin
+*.onnx
+*.index
+
+# Voice recordings and generated audio: personal, never commit
+*.wav
+*.flac
+*.mp3
+*.ogg
+*.m4a
+
+# Python
+__pycache__/
+*.pyc

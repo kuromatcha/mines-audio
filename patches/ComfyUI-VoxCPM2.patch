@@ -1,0 +1,43 @@
+diff --git a/modules/loader.py b/modules/loader.py
+index 217c49a..0757403 100644
+--- a/modules/loader.py
++++ b/modules/loader.py
+@@ -130,8 +130,8 @@ def load_model(model_name: str, optimize: bool = False, torch_compile: bool = Fa
+         enable_lm=True,
+         enable_dit=True,
+         enable_proj=False,
+-        r=32,
+-        alpha=16,
++        r=64,  # patched: SiangTTS Thai LoRA is r=64/alpha=128 (node default was 32/16)
++        alpha=128,
+     )
+ 
+     model_instance = VoxCPMPipeline(
+diff --git a/src/voxcpm/modules/minicpm4/model.py b/src/voxcpm/modules/minicpm4/model.py
+index 44fa647..99c0acb 100644
+--- a/src/voxcpm/modules/minicpm4/model.py
++++ b/src/voxcpm/modules/minicpm4/model.py
+@@ -202,6 +202,8 @@ class MiniCPMAttention(nn.Module):
+         value_cache[:, :, position_id, :] = value_states
+ 
+         attn_mask = torch.arange(key_cache.size(2), device=key_cache.device) <= position_id
++        # patched: torch 2.12 SDPA rejects 1-D masks; make it broadcastable (B,H,1,S)
++        attn_mask = attn_mask.reshape(1, 1, 1, -1)
+ 
+         # ref: https://github.com/pytorch/pytorch/issues/163597
+         # there is a bug in MPS for non-contiguous tensors, so we need to make them contiguous
+diff --git a/voxcpm2_nodes.py b/voxcpm2_nodes.py
+index dae49b5..82c9393 100644
+--- a/voxcpm2_nodes.py
++++ b/voxcpm2_nodes.py
+@@ -132,7 +132,9 @@ def _save_audio_to_temp(waveform: torch.Tensor, sample_rate: int) -> str:
+     tmp = tempfile.NamedTemporaryFile(suffix=".wav", delete=False)
+     tmp.close()
+     try:
+-        torchaudio.save(tmp.name, waveform, sample_rate)
++        # patched: torchaudio 2.11 needs torchcodec/ffmpeg for save(); soundfile has no such dependency
++        import soundfile as sf
++        sf.write(tmp.name, waveform.detach().cpu().float().numpy().T, sample_rate)
+     except Exception:
+         try:
+             os.unlink(tmp.name)

@@ -1,0 +1,15 @@
+diff --git a/engines/index_tts/indextts/infer_v2.py b/engines/index_tts/indextts/infer_v2.py
+index 3e2e7bb..e9cd578 100644
+--- a/engines/index_tts/indextts/infer_v2.py
++++ b/engines/index_tts/indextts/infer_v2.py
+@@ -972,6 +972,10 @@ class IndexTTS2:
+                         code_len = len_ - 1
+                     code_lens.append(code_len)
+                 codes = codes[:, :code_len]
++                # local patch: pad with silent tokens so the decoder can finish the last syllable (was cut off)
++                tail_pad = 12
++                codes = torch.cat([codes, torch.full((codes.shape[0], tail_pad), 52, dtype=codes.dtype, device=codes.device)], dim=1)
++                code_lens = [int(l) + tail_pad for l in code_lens]
+                 code_lens = torch.LongTensor(code_lens)
+                 code_lens = code_lens.to(self.device)
+                 if verbose:
