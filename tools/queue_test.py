@@ -1,13 +1,12 @@
 """Queue one test line in a running ComfyUI and report how it came out.
 
-    python tools/queue_test.py thai "สวัสดีค่ะ"
+    python tools/queue_test.py thai "สวัสดีค่ะ" --voice my_voice.wav
     python tools/queue_test.py english "Hello there." --voice my_voice.wav --start 34.5
 
 The voice file must be in ComfyUI's input folder. The result is saved under
-output/txt2voi_tests/ and checked for clipping and a cut-off ending.
+output/tts_tests/ and checked for clipping and a cut-off ending.
 """
-import argparse, json, time, urllib.request
-from pathlib import Path
+import argparse, io, json, time, urllib.parse, urllib.request
 
 import numpy as np
 import soundfile as sf
@@ -44,18 +43,17 @@ def main():
     p = argparse.ArgumentParser()
     p.add_argument("language", choices=["thai", "english"])
     p.add_argument("text")
-    p.add_argument("--voice", default="record_reaal.wav", help="file in ComfyUI's input folder")
-    p.add_argument("--start", type=float, default=34.5, help="where the 12 s voice sample starts (s)")
+    p.add_argument("--voice", required=True, help="voice recording, a file in ComfyUI's input folder")
+    p.add_argument("--start", type=float, default=1.0, help="where the 12 s voice sample starts (s)")
     p.add_argument("--seed", type=int, default=1)
     p.add_argument("--description", default="", help="Thai only: VoxCPM voice description")
     p.add_argument("--server", default="http://127.0.0.1:8188")
-    p.add_argument("--output-dir", default=r"D:\Comfy-Desktop\ComfyUI-Shared\output")
     a = p.parse_args()
 
     prompt = thai_prompt(a) if a.language == "thai" else english_prompt(a)
     prompt["load"] = {"class_type": "LoadAudio", "inputs": {"audio": a.voice}}
     prompt["trim"] = {"class_type": "TrimAudioDuration", "inputs": {"audio": ["load", 0], "start_index": a.start, "duration": 12.0}}
-    prompt["save"] = {"class_type": "SaveAudio", "inputs": {"audio": ["2", 0], "filename_prefix": f"txt2voi_tests/{a.language}"}}
+    prompt["save"] = {"class_type": "SaveAudio", "inputs": {"audio": ["2", 0], "filename_prefix": f"tts_tests/{a.language}"}}
 
     req = urllib.request.Request(f"{a.server}/prompt", data=json.dumps({"prompt": prompt}).encode(),
                                  headers={"Content-Type": "application/json"})
@@ -71,10 +69,11 @@ def main():
 
     for out in h[pid]["outputs"].values():
         for f in out.get("audio", []):
-            if f["subfolder"] != "txt2voi_tests":
+            if f["subfolder"] != "tts_tests":
                 continue
-            path = Path(a.output_dir) / f["subfolder"] / f["filename"]
-            x, sr = sf.read(path, dtype="float32")
+            path = f"output/{f['subfolder']}/{f['filename']}"
+            query = urllib.parse.urlencode({"filename": f["filename"], "subfolder": f["subfolder"], "type": "output"})
+            x, sr = sf.read(io.BytesIO(urllib.request.urlopen(f"{a.server}/view?{query}").read()), dtype="float32")
             x = x if x.ndim == 1 else x.mean(axis=1)
             hop = sr // 20
             end_db = 20 * np.log10(np.sqrt((x[-2 * hop:-hop] ** 2).mean()) + 1e-9)
