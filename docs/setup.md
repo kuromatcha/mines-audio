@@ -34,8 +34,8 @@ The patches in step 2 are made for these commits. On a newer commit they may not
 Clone this repository anywhere, then run from `ComfyUI/custom_nodes/`:
 
 ```sh
-git -C ComfyUI-VoxCPM2 apply path/to/mines-TTS/patches/ComfyUI-VoxCPM2.patch
-git -C TTS-Audio-Suite apply path/to/mines-TTS/patches/TTS-Audio-Suite.patch
+git -C ComfyUI-VoxCPM2 apply path/to/mines-audio/patches/ComfyUI-VoxCPM2.patch
+git -C TTS-Audio-Suite apply path/to/mines-audio/patches/TTS-Audio-Suite.patch
 ```
 
 | Patch | What it fixes |

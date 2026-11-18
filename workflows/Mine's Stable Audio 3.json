@@ -1,0 +1,1008 @@
+{
+  "id": "2032b497-9a7b-5d50-90bc-12980f38a1ea",
+  "revision": 0,
+  "last_node_id": 3,
+  "last_link_id": 1,
+  "nodes": [
+    {
+      "id": 1,
+      "type": "42316152-4c31-5724-acd2-6b4f633a0eb3",
+      "pos": [
+        0,
+        0
+      ],
+      "size": [
+        840,
+        960
+      ],
+      "flags": {
+        "pinned": true
+      },
+      "order": 0,
+      "mode": 0,
+      "inputs": [
+        {
+          "label": "prompt",
+          "name": "text",
+          "type": "STRING",
+          "widget": {
+            "name": "text"
+          },
+          "link": null
+        },
+        {
+          "label": "negative prompt",
+          "name": "text_1",
+          "type": "STRING",
+          "widget": {
+            "name": "text_1"
+          },
+          "link": null
+        },
+        {
+          "label": "length (seconds)",
+          "name": "seconds",
+          "type": "FLOAT",
+          "widget": {
+            "name": "seconds"
+          },
+          "link": null
+        },
+        {
+          "label": "batch size",
+          "name": "batch_size",
+          "type": "INT",
+          "widget": {
+            "name": "batch_size"
+          },
+          "link": null
+        },
+        {
+          "label": "model",
+          "name": "ckpt_name",
+          "type": "COMBO",
+          "widget": {
+            "name": "ckpt_name"
+          },
+          "link": null
+        },
+        {
+          "label": "steps",
+          "name": "steps",
+          "type": "INT",
+          "widget": {
+            "name": "steps"
+          },
+          "link": null
+        },
+        {
+          "label": "cfg",
+          "name": "cfg",
+          "type": "FLOAT",
+          "widget": {
+            "name": "cfg"
+          },
+          "link": null
+        }
+      ],
+      "outputs": [
+        {
+          "label": "audio",
+          "localized_name": "audio",
+          "name": "audio",
+          "type": "AUDIO",
+          "links": [
+            1
+          ]
+        }
+      ],
+      "properties": {
+        "previewExposures": []
+      },
+      "widgets_values": [
+        "Japanese visual novel slice-of-life daily BGM in bright J-pop style with a catchy piano lead melody, clean electric guitar cutting, bouncy electric bass, snappy pop drums, glockenspiel and a light string section over a royal road IV-V-iii-vi chord progression, creating a cheerful, youthful school-days morning feel. BPM: 128. Length: 90 seconds",
+        "",
+        90.0,
+        2,
+        "stable_audio_3_medium.safetensors",
+        8,
+        1.0
+      ],
+      "widgets_values_named": {
+        "text": "Japanese visual novel slice-of-life daily BGM in bright J-pop style with a catchy piano lead melody, clean electric guitar cutting, bouncy electric bass, snappy pop drums, glockenspiel and a light string section over a royal road IV-V-iii-vi chord progression, creating a cheerful, youthful school-days morning feel. BPM: 128. Length: 90 seconds",
+        "text_1": "",
+        "seconds": 90.0,
+        "batch_size": 2,
+        "ckpt_name": "stable_audio_3_medium.safetensors",
+        "steps": 8,
+        "cfg": 1.0
+      }
+    },
+    {
+      "id": 2,
+      "type": "SaveAudio",
+      "pos": [
+        880,
+        0
+      ],
+      "size": [
+        480,
+        960
+      ],
+      "flags": {
+        "pinned": true
+      },
+      "order": 1,
+      "mode": 0,
+      "inputs": [
+        {
+          "localized_name": "audio",
+          "name": "audio",
+          "type": "AUDIO",
+          "link": 1
+        },
+        {
+          "localized_name": "filename_prefix",
+          "name": "filename_prefix",
+          "type": "STRING",
+          "widget": {
+            "name": "filename_prefix"
+          },
+          "link": null
+        }
+      ],
+      "outputs": [],
+      "title": "Result",
+      "properties": {
+        "Node name for S&R": "SaveAudio"
+      },
+      "widgets_values": [
+        "audio/stable_audio_3"
+      ],
+      "widgets_values_named": {
+        "filename_prefix": "audio/stable_audio_3"
+      }
+    },
+    {
+      "id": 3,
+      "type": "MarkdownNote",
+      "pos": [
+        1400,
+        0
+      ],
+      "size": [
+        560,
+        960
+      ],
+      "flags": {
+        "pinned": true
+      },
+      "order": 2,
+      "mode": 0,
+      "inputs": [],
+      "outputs": [],
+      "title": "Guide",
+      "properties": {},
+      "widgets_values": [
+        "# Guide\n\n## Prompt\n- One sentence: **style** with **main instruments**, **layers**, **percussion**, **mood**. End with `BPM: X. Length: Y seconds`.\n- Instrumental and SFX only: it never sings. Good for game BGM and loops.\n- Name the scene the music is for (\"Japanese visual novel morning BGM\", \"boss battle\").\n- For a short SFX, describe the sound and set **length** to a few seconds.\n\n## Settings\n- **negative prompt**: empty is fine.\n- **length (seconds)**: exact length of the clip. Match the Length in the prompt.\n- **batch size**: 2 · takes per run. Cheap: 8 steps, a few seconds each.\n- **model**: Medium (music + SFX) · Small Music / Small SFX are lighter.\n- **steps** 8 · **cfg** 1\n\n## Inside the subgraph\n- lcm / simple\n- Seed: random. To keep one: *Sample* → fixed.\n- Text encoder: *Load text encoder* (t5gemma).\n\n## Routine\n1. Batch 4–8 at the final length, keep the best.\n2. Fix the seed, adjust the prompt.\n3. For a loop, cut intro and outro and crossfade the ends.\n\nLicence: Stability Community License (commercial use under $1M yearly revenue)."
+      ],
+      "widgets_values_named": {
+        "text": "# Guide\n\n## Prompt\n- One sentence: **style** with **main instruments**, **layers**, **percussion**, **mood**. End with `BPM: X. Length: Y seconds`.\n- Instrumental and SFX only: it never sings. Good for game BGM and loops.\n- Name the scene the music is for (\"Japanese visual novel morning BGM\", \"boss battle\").\n- For a short SFX, describe the sound and set **length** to a few seconds.\n\n## Settings\n- **negative prompt**: empty is fine.\n- **length (seconds)**: exact length of the clip. Match the Length in the prompt.\n- **batch size**: 2 · takes per run. Cheap: 8 steps, a few seconds each.\n- **model**: Medium (music + SFX) · Small Music / Small SFX are lighter.\n- **steps** 8 · **cfg** 1\n\n## Inside the subgraph\n- lcm / simple\n- Seed: random. To keep one: *Sample* → fixed.\n- Text encoder: *Load text encoder* (t5gemma).\n\n## Routine\n1. Batch 4–8 at the final length, keep the best.\n2. Fix the seed, adjust the prompt.\n3. For a loop, cut intro and outro and crossfade the ends.\n\nLicence: Stability Community License (commercial use under $1M yearly revenue)."
+      },
+      "color": "#432",
+      "bgcolor": "#653"
+    }
+  ],
+  "links": [
+    [
+      1,
+      1,
+      0,
+      2,
+      0,
+      "AUDIO"
+    ]
+  ],
+  "groups": [],
+  "definitions": {
+    "subgraphs": [
+      {
+        "id": "42316152-4c31-5724-acd2-6b4f633a0eb3",
+        "version": 1,
+        "state": {
+          "lastGroupId": 4,
+          "lastNodeId": 7,
+          "lastLinkId": 16,
+          "lastRerouteId": 0
+        },
+        "revision": 0,
+        "config": {},
+        "name": "Mine's Stable Audio 3",
+        "inputNode": {
+          "id": -10,
+          "bounding": [
+            -380,
+            0,
+            300,
+            184
+          ]
+        },
+        "outputNode": {
+          "id": -20,
+          "bounding": [
+            1820,
+            0,
+            128,
+            68
+          ]
+        },
+        "inputs": [
+          {
+            "id": "0eb8968b-9772-5405-a696-3185c48d8c84",
+            "name": "text",
+            "type": "STRING",
+            "linkIds": [
+              9
+            ],
+            "label": "prompt",
+            "pos": [
+              -100,
+              24
+            ]
+          },
+          {
+            "id": "f800a9c1-93fb-5c24-88c4-585a6b71be35",
+            "name": "text_1",
+            "type": "STRING",
+            "linkIds": [
+              10
+            ],
+            "label": "negative prompt",
+            "pos": [
+              -100,
+              44
+            ]
+          },
+          {
+            "id": "e6d240cc-0686-5f9e-b1ab-103d811c9b22",
+            "name": "seconds",
+            "type": "FLOAT",
+            "linkIds": [
+              11
+            ],
+            "label": "length (seconds)",
+            "pos": [
+              -100,
+              64
+            ]
+          },
+          {
+            "id": "16605786-b673-55c8-9481-a8f491348b2b",
+            "name": "batch_size",
+            "type": "INT",
+            "linkIds": [
+              12
+            ],
+            "label": "batch size",
+            "pos": [
+              -100,
+              84
+            ]
+          },
+          {
+            "id": "96c46934-dbab-57bd-85eb-99dae12545a0",
+            "name": "ckpt_name",
+            "type": "COMBO",
+            "linkIds": [
+              13
+            ],
+            "label": "model",
+            "pos": [
+              -100,
+              104
+            ]
+          },
+          {
+            "id": "87d14de2-d0e9-55cc-8d96-a8212d17cde5",
+            "name": "steps",
+            "type": "INT",
+            "linkIds": [
+              14
+            ],
+            "label": "steps",
+            "pos": [
+              -100,
+              124
+            ]
+          },
+          {
+            "id": "58d15f33-81c8-59be-a2d1-7df97b09bfec",
+            "name": "cfg",
+            "type": "FLOAT",
+            "linkIds": [
+              15
+            ],
+            "label": "cfg",
+            "pos": [
+              -100,
+              144
+            ]
+          }
+        ],
+        "outputs": [
+          {
+            "id": "5e2bdc5a-e507-5edd-a9d6-a198357d5ede",
+            "name": "audio",
+            "type": "AUDIO",
+            "linkIds": [
+              16
+            ],
+            "localized_name": "audio",
+            "label": "audio",
+            "pos": [
+              1840,
+              24
+            ]
+          }
+        ],
+        "widgets": [],
+        "nodes": [
+          {
+            "id": 1,
+            "type": "CheckpointLoaderSimple",
+            "pos": [
+              0,
+              0
+            ],
+            "size": [
+              380,
+              160
+            ],
+            "flags": {},
+            "order": 0,
+            "mode": 0,
+            "inputs": [
+              {
+                "localized_name": "ckpt_name",
+                "name": "ckpt_name",
+                "type": "COMBO",
+                "widget": {
+                  "name": "ckpt_name"
+                },
+                "link": 13
+              }
+            ],
+            "outputs": [
+              {
+                "localized_name": "MODEL",
+                "name": "MODEL",
+                "type": "MODEL",
+                "links": [
+                  3
+                ]
+              },
+              {
+                "localized_name": "CLIP",
+                "name": "CLIP",
+                "type": "CLIP",
+                "links": null
+              },
+              {
+                "localized_name": "VAE",
+                "name": "VAE",
+                "type": "VAE",
+                "links": [
+                  8
+                ]
+              }
+            ],
+            "title": "Load Stable Audio 3 model",
+            "properties": {
+              "Node name for S&R": "CheckpointLoaderSimple"
+            },
+            "widgets_values": [
+              "stable_audio_3_medium.safetensors"
+            ],
+            "widgets_values_named": {
+              "ckpt_name": "stable_audio_3_medium.safetensors"
+            },
+            "color": "#432",
+            "bgcolor": "#653"
+          },
+          {
+            "id": 2,
+            "type": "CLIPLoader",
+            "pos": [
+              0,
+              220
+            ],
+            "size": [
+              380,
+              160
+            ],
+            "flags": {},
+            "order": 1,
+            "mode": 0,
+            "inputs": [
+              {
+                "localized_name": "clip_name",
+                "name": "clip_name",
+                "type": "COMBO",
+                "widget": {
+                  "name": "clip_name"
+                },
+                "link": null
+              },
+              {
+                "localized_name": "type",
+                "name": "type",
+                "type": "COMBO",
+                "widget": {
+                  "name": "type"
+                },
+                "link": null
+              },
+              {
+                "localized_name": "device",
+                "name": "device",
+                "type": "COMBO",
+                "widget": {
+                  "name": "device"
+                },
+                "link": null
+              }
+            ],
+            "outputs": [
+              {
+                "localized_name": "CLIP",
+                "name": "CLIP",
+                "type": "CLIP",
+                "links": [
+                  1,
+                  2
+                ]
+              }
+            ],
+            "title": "Load text encoder",
+            "properties": {
+              "Node name for S&R": "CLIPLoader"
+            },
+            "widgets_values": [
+              "t5gemma_b_b_ul2.safetensors",
+              "stable_audio",
+              "default"
+            ],
+            "widgets_values_named": {
+              "clip_name": "t5gemma_b_b_ul2.safetensors",
+              "type": "stable_audio",
+              "device": "default"
+            }
+          },
+          {
+            "id": 3,
+            "type": "CLIPTextEncode",
+            "pos": [
+              460,
+              0
+            ],
+            "size": [
+              380,
+              320
+            ],
+            "flags": {},
+            "order": 2,
+            "mode": 0,
+            "inputs": [
+              {
+                "localized_name": "clip",
+                "name": "clip",
+                "type": "CLIP",
+                "link": 1
+              },
+              {
+                "localized_name": "text",
+                "name": "text",
+                "type": "STRING",
+                "widget": {
+                  "name": "text"
+                },
+                "link": 9
+              }
+            ],
+            "outputs": [
+              {
+                "localized_name": "CONDITIONING",
+                "name": "CONDITIONING",
+                "type": "CONDITIONING",
+                "links": [
+                  4
+                ]
+              }
+            ],
+            "title": "Encode prompt",
+            "properties": {
+              "Node name for S&R": "CLIPTextEncode"
+            },
+            "widgets_values": [
+              "Japanese visual novel slice-of-life daily BGM in bright J-pop style with a catchy piano lead melody, clean electric guitar cutting, bouncy electric bass, snappy pop drums, glockenspiel and a light string section over a royal road IV-V-iii-vi chord progression, creating a cheerful, youthful school-days morning feel. BPM: 128. Length: 90 seconds"
+            ],
+            "widgets_values_named": {
+              "text": "Japanese visual novel slice-of-life daily BGM in bright J-pop style with a catchy piano lead melody, clean electric guitar cutting, bouncy electric bass, snappy pop drums, glockenspiel and a light string section over a royal road IV-V-iii-vi chord progression, creating a cheerful, youthful school-days morning feel. BPM: 128. Length: 90 seconds"
+            },
+            "color": "#232",
+            "bgcolor": "#353"
+          },
+          {
+            "id": 4,
+            "type": "CLIPTextEncode",
+            "pos": [
+              460,
+              380
+            ],
+            "size": [
+              380,
+              200
+            ],
+            "flags": {},
+            "order": 3,
+            "mode": 0,
+            "inputs": [
+              {
+                "localized_name": "clip",
+                "name": "clip",
+                "type": "CLIP",
+                "link": 2
+              },
+              {
+                "localized_name": "text",
+                "name": "text",
+                "type": "STRING",
+                "widget": {
+                  "name": "text"
+                },
+                "link": 10
+              }
+            ],
+            "outputs": [
+              {
+                "localized_name": "CONDITIONING",
+                "name": "CONDITIONING",
+                "type": "CONDITIONING",
+                "links": [
+                  5
+                ]
+              }
+            ],
+            "title": "Encode negative prompt",
+            "properties": {
+              "Node name for S&R": "CLIPTextEncode"
+            },
+            "widgets_values": [
+              ""
+            ],
+            "widgets_values_named": {
+              "text": ""
+            }
+          },
+          {
+            "id": 5,
+            "type": "EmptyLatentAudio",
+            "pos": [
+              920,
+              0
+            ],
+            "size": [
+              380,
+              120
+            ],
+            "flags": {},
+            "order": 4,
+            "mode": 0,
+            "inputs": [
+              {
+                "localized_name": "seconds",
+                "name": "seconds",
+                "type": "FLOAT",
+                "widget": {
+                  "name": "seconds"
+                },
+                "link": 11
+              },
+              {
+                "localized_name": "batch_size",
+                "name": "batch_size",
+                "type": "INT",
+                "widget": {
+                  "name": "batch_size"
+                },
+                "link": 12
+              }
+            ],
+            "outputs": [
+              {
+                "localized_name": "LATENT",
+                "name": "LATENT",
+                "type": "LATENT",
+                "links": [
+                  6
+                ]
+              }
+            ],
+            "title": "Empty latent of that length",
+            "properties": {
+              "Node name for S&R": "EmptyLatentAudio"
+            },
+            "widgets_values": [
+              90.0,
+              2
+            ],
+            "widgets_values_named": {
+              "seconds": 90.0,
+              "batch_size": 2
+            }
+          },
+          {
+            "id": 6,
+            "type": "KSampler",
+            "pos": [
+              920,
+              180
+            ],
+            "size": [
+              380,
+              320
+            ],
+            "flags": {},
+            "order": 5,
+            "mode": 0,
+            "inputs": [
+              {
+                "localized_name": "model",
+                "name": "model",
+                "type": "MODEL",
+                "link": 3
+              },
+              {
+                "localized_name": "positive",
+                "name": "positive",
+                "type": "CONDITIONING",
+                "link": 4
+              },
+              {
+                "localized_name": "negative",
+                "name": "negative",
+                "type": "CONDITIONING",
+                "link": 5
+              },
+              {
+                "localized_name": "latent_image",
+                "name": "latent_image",
+                "type": "LATENT",
+                "link": 6
+              },
+              {
+                "localized_name": "seed",
+                "name": "seed",
+                "type": "INT",
+                "widget": {
+                  "name": "seed"
+                },
+                "link": null
+              },
+              {
+                "localized_name": "steps",
+                "name": "steps",
+                "type": "INT",
+                "widget": {
+                  "name": "steps"
+                },
+                "link": 14
+              },
+              {
+                "localized_name": "cfg",
+                "name": "cfg",
+                "type": "FLOAT",
+                "widget": {
+                  "name": "cfg"
+                },
+                "link": 15
+              },
+              {
+                "localized_name": "sampler_name",
+                "name": "sampler_name",
+                "type": "COMBO",
+                "widget": {
+                  "name": "sampler_name"
+                },
+                "link": null
+              },
+              {
+                "localized_name": "scheduler",
+                "name": "scheduler",
+                "type": "COMBO",
+                "widget": {
+                  "name": "scheduler"
+                },
+                "link": null
+              },
+              {
+                "localized_name": "denoise",
+                "name": "denoise",
+                "type": "FLOAT",
+                "widget": {
+                  "name": "denoise"
+                },
+                "link": null
+              }
+            ],
+            "outputs": [
+              {
+                "localized_name": "LATENT",
+                "name": "LATENT",
+                "type": "LATENT",
+                "links": [
+                  7
+                ]
+              }
+            ],
+            "title": "Sample",
+            "properties": {
+              "Node name for S&R": "KSampler"
+            },
+            "widgets_values": [
+              0,
+              "randomize",
+              8,
+              1.0,
+              "lcm",
+              "simple",
+              1.0
+            ],
+            "widgets_values_named": {
+              "seed": 0,
+              "control_after_generate": "randomize",
+              "steps": 8,
+              "cfg": 1.0,
+              "sampler_name": "lcm",
+              "scheduler": "simple",
+              "denoise": 1.0
+            },
+            "color": "#432",
+            "bgcolor": "#653"
+          },
+          {
+            "id": 7,
+            "type": "VAEDecodeAudio",
+            "pos": [
+              1380,
+              0
+            ],
+            "size": [
+              380,
+              100
+            ],
+            "flags": {},
+            "order": 6,
+            "mode": 0,
+            "inputs": [
+              {
+                "localized_name": "samples",
+                "name": "samples",
+                "type": "LATENT",
+                "link": 7
+              },
+              {
+                "localized_name": "vae",
+                "name": "vae",
+                "type": "VAE",
+                "link": 8
+              }
+            ],
+            "outputs": [
+              {
+                "localized_name": "AUDIO",
+                "name": "AUDIO",
+                "type": "AUDIO",
+                "links": [
+                  16
+                ]
+              }
+            ],
+            "title": "Decode audio",
+            "properties": {
+              "Node name for S&R": "VAEDecodeAudio"
+            }
+          }
+        ],
+        "groups": [
+          {
+            "id": 1,
+            "title": "1 · Models",
+            "bounding": [
+              -20,
+              -80,
+              420,
+              700
+            ],
+            "color": "#3f789e",
+            "flags": {}
+          },
+          {
+            "id": 2,
+            "title": "2 · Prompt",
+            "bounding": [
+              440,
+              -80,
+              420,
+              700
+            ],
+            "color": "#3f789e",
+            "flags": {}
+          },
+          {
+            "id": 3,
+            "title": "3 · Sampling",
+            "bounding": [
+              900,
+              -80,
+              420,
+              700
+            ],
+            "color": "#3f789e",
+            "flags": {}
+          },
+          {
+            "id": 4,
+            "title": "4 · Decode",
+            "bounding": [
+              1360,
+              -80,
+              420,
+              700
+            ],
+            "color": "#3f789e",
+            "flags": {}
+          }
+        ],
+        "links": [
+          {
+            "id": 1,
+            "origin_id": 2,
+            "origin_slot": 0,
+            "target_id": 3,
+            "target_slot": 0,
+            "type": "CLIP"
+          },
+          {
+            "id": 2,
+            "origin_id": 2,
+            "origin_slot": 0,
+            "target_id": 4,
+            "target_slot": 0,
+            "type": "CLIP"
+          },
+          {
+            "id": 3,
+            "origin_id": 1,
+            "origin_slot": 0,
+            "target_id": 6,
+            "target_slot": 0,
+            "type": "MODEL"
+          },
+          {
+            "id": 4,
+            "origin_id": 3,
+            "origin_slot": 0,
+            "target_id": 6,
+            "target_slot": 1,
+            "type": "CONDITIONING"
+          },
+          {
+            "id": 5,
+            "origin_id": 4,
+            "origin_slot": 0,
+            "target_id": 6,
+            "target_slot": 2,
+            "type": "CONDITIONING"
+          },
+          {
+            "id": 6,
+            "origin_id": 5,
+            "origin_slot": 0,
+            "target_id": 6,
+            "target_slot": 3,
+            "type": "LATENT"
+          },
+          {
+            "id": 7,
+            "origin_id": 6,
+            "origin_slot": 0,
+            "target_id": 7,
+            "target_slot": 0,
+            "type": "LATENT"
+          },
+          {
+            "id": 8,
+            "origin_id": 1,
+            "origin_slot": 2,
+            "target_id": 7,
+            "target_slot": 1,
+            "type": "VAE"
+          },
+          {
+            "id": 9,
+            "origin_id": -10,
+            "origin_slot": 0,
+            "target_id": 3,
+            "target_slot": 1,
+            "type": "STRING"
+          },
+          {
+            "id": 10,
+            "origin_id": -10,
+            "origin_slot": 1,
+            "target_id": 4,
+            "target_slot": 1,
+            "type": "STRING"
+          },
+          {
+            "id": 11,
+            "origin_id": -10,
+            "origin_slot": 2,
+            "target_id": 5,
+            "target_slot": 0,
+            "type": "FLOAT"
+          },
+          {
+            "id": 12,
+            "origin_id": -10,
+            "origin_slot": 3,
+            "target_id": 5,
+            "target_slot": 1,
+            "type": "INT"
+          },
+          {
+            "id": 13,
+            "origin_id": -10,
+            "origin_slot": 4,
+            "target_id": 1,
+            "target_slot": 0,
+            "type": "COMBO"
+          },
+          {
+            "id": 14,
+            "origin_id": -10,
+            "origin_slot": 5,
+            "target_id": 6,
+            "target_slot": 5,
+            "type": "INT"
+          },
+          {
+            "id": 15,
+            "origin_id": -10,
+            "origin_slot": 6,
+            "target_id": 6,
+            "target_slot": 6,
+            "type": "FLOAT"
+          },
+          {
+            "id": 16,
+            "origin_id": 7,
+            "origin_slot": 0,
+            "target_id": -20,
+            "target_slot": 0,
+            "type": "AUDIO"
+          }
+        ],
+        "extra": {
+          "workflowRendererVersion": "LG"
+        }
+      }
+    ]
+  },
+  "config": {},
+  "extra": {
+    "workflowRendererVersion": "LG"
+  },
+  "version": 0.4
+}
