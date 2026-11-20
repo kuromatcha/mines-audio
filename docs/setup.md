@@ -43,7 +43,8 @@ git -C TTS-Audio-Suite apply path/to/mines-audio/patches/TTS-Audio-Suite.patch
 | `ComfyUI-VoxCPM2.patch` | Loads the LoRA at rank 64 / alpha 128, which is what SiangTTS uses (the node's default 32 / 16 loads it wrong). |
 | | Reshapes a 1-D attention mask that PyTorch 2.12 rejects (`IndexError`). |
 | | Saves the voice sample with `soundfile` instead of torchaudio, which needs torchcodec and FFmpeg (`ImportError`). |
-| `TTS-Audio-Suite.patch` | IndexTTS-2 cut off the last syllable. The patch pads the end with silence codes so the voice fades out. It only changes IndexTTS-2; the workflow now uses IndexTTS-2.5, which does not drop the last code, so the patch matters only if you switch `model_path` back to IndexTTS-2. |
+| `TTS-Audio-Suite.patch` | IndexTTS-2 cut off the last syllable. The patch pads the end with silence codes so the voice fades out. It only changes IndexTTS-2; the workflow now uses IndexTTS-2.5, which does not drop the last code, so this part matters only if you switch `model_path` back to IndexTTS-2. |
+| | The **model_path** list showed every downloaded model twice (`IndexTTS-2.5` and `local:IndexTTS-2.5`). The patch hides the `local:` copy of the built-in names; the plain name loads the same folder without downloading. |
 
 Updating either node pack removes its patch. Apply it again afterwards.
 

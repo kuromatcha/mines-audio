@@ -1,5 +1,5 @@
 diff --git a/engines/index_tts/indextts/infer_v2.py b/engines/index_tts/indextts/infer_v2.py
-index 3e2e7bb..e9cd578 100644
+index 3e2e7bbf..e9cd5782 100644
 --- a/engines/index_tts/indextts/infer_v2.py
 +++ b/engines/index_tts/indextts/infer_v2.py
 @@ -972,6 +972,10 @@ class IndexTTS2:
@@ -13,3 +13,19 @@ index 3e2e7bb..e9cd578 100644
                  code_lens = torch.LongTensor(code_lens)
                  code_lens = code_lens.to(self.device)
                  if verbose:
+diff --git a/nodes/engines/index_tts_engine_node.py b/nodes/engines/index_tts_engine_node.py
+index 27582265..d02e3ae0 100644
+--- a/nodes/engines/index_tts_engine_node.py
++++ b/nodes/engines/index_tts_engine_node.py
+@@ -246,7 +246,10 @@ This can be connected together with the vector/text emotion input above; IndexTT
+                         if local_model not in paths:
+                             paths.insert(-1, local_model)  # Insert before auto-download
+ 
+-        return paths
++        # local patch (mines-audio): hide "local:<name>" when <name> is a built-in model name. The plain name already
++        # loads that folder from disk without downloading, so the extra entry is a confusing duplicate.
++        builtin = {"IndexTTS-2.5", "IndexTTS-2"}
++        return [p for p in paths if not (p.startswith("local:") and p[len("local:"):] in builtin)]
+     
+     def create_engine_adapter(
+         self,
