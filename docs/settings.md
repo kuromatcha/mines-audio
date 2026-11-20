@@ -23,34 +23,53 @@ The **In the workflow** column is what the files in [`workflows/`](../workflows)
 | `seed` | fixed | The same character on every line. |
 | `retry_threshold` | 12 | Avoids false "badcase" retries. |
 
-### English (IndexTTS-2.5)
+### English and Japanese (IndexTTS-2.5)
+
+The same workflow speaks both: set `language` to English or Japanese. Values tested over 4 seeds in each language, with a clean 12 s voice sample.
 
 | Setting | In the workflow | Notes |
 |---|---|---|
 | Emotion clip | bypassed | |
-| Emotion sliders | connected: Calm 0.4, Melancholic 0.2 | **Open.** Earlier recommendation: bypass the sliders too (select the node, Ctrl+B), because blending them with the voice distorted it. |
-| `model_path` | IndexTTS-2.5 | Was IndexTTS-2. The values below were tuned on IndexTTS-2 and have not been re-tested on 2.5. |
-| `language` | English | 2.5 only. |
-| `duration_factor` | 1.0 | 2.5 only. 1.1-1.25 slows the speech. |
-| `emotion_alpha` | 1.0 | |
-| `temperature` | 0.8 | **Open.** Earlier recommendation: 0.7 for steadier pronunciation. |
-| `use_fp16` | on | **Open.** On 2.5 this means BF16. Earlier recommendation (on IndexTTS-2, FP16): off, because half precision added crackle. |
+| Emotion sliders | connected: Happy 0.2, Calm 0.4 | Soft and warm. Bypass the node (Ctrl+B) for a neutral read. |
+| `emotion_alpha` | 0.65 | Keeps the voice likeness. |
+| `model_path` | IndexTTS-2.5 | |
+| `language` | English | Or Japanese. |
+| `duration_factor` | 1.0 | Keep it at 1.0 with pause tags (see below). |
+| `temperature`, `top_p`, `top_k`, `num_beams` | 0.8, 0.8, 31, 3 | |
+| `use_fp16` | on | On 2.5 this means BF16. |
 | `seed` | fixed | |
+| Text | sentences separated by `[pause:0.8s]` | See below. |
 
-### Pacing (English and Japanese, IndexTTS-2.5)
+### Pacing
 
-Measured over 4 seeds each.
+- **Voice sample:** use 12 s of continuous speech with no silence at the start and no break longer than about 0.6 s. The clone copies the sample's rhythm: a sample with 1-1.5 s gaps gave 14-18 s of dead air on 3 of 4 seeds, with the words squeezed into the rest (up to 4.5 words/s). Set **Trim speaker clip** `start_index` to where such a stretch begins.
+- **Sentence pauses:** IndexTTS-2.5 has no setting for the gap between sentences, and `max_text_tokens_per_segment` (minimum 50) is too large to split short text. Put a pause tag between sentences instead, for example `Long day, hm? [pause:0.8s] It's okay...`. Any length works (`[pause:0.4s]`, `[pause:1s]`).
+- **Speed with pause tags:** keep `duration_factor` at 1.0. Each tagged sentence is generated on its own and already comes out slower; 1.3 made the speech drag. Raise it to 1.1 only if it still sounds rushed.
 
-- **Voice sample:** use 12 s of continuous speech with no silence at the start and no break longer than about 0.6 s. A sample with 1-1.5 s gaps gave 14-18 s of dead air on 3 of 4 seeds, with the words squeezed into the rest.
-- **Sentence pauses:** IndexTTS-2.5 has no setting for the gap between sentences, and `max_text_tokens_per_segment` (minimum 50) is too large to split short text. Put `[pause:0.8s]` between sentences instead: gaps came out at 0.8-1.0 s on every seed.
-- **Speed with pause tags:** keep `duration_factor` at 1.0. Each tagged sentence is generated on its own and already comes out slower; 1.3 made the speech drag.
-- **Japanese:** set `language` to Japanese. With the patch, kanji are read through the dictionary. 私 reads as わたくし; write `<私|わたし>` (or kana) for わたし. Any word can be given a reading this way: `<今夜|こんや>`.
+Measured with `[pause:0.8s]` and `duration_factor` 1.0:
+
+| Language | Pace | Gap between sentences | Dead air |
+|---|---|---|---|
+| English | 2.5-3.4 words/s | 0.6-1.0 s | none |
+| Japanese | 4.6-6.2 morae/s | 0.8-1.6 s | none |
+
+Japanese gaps come out longer; use `[pause:0.5s]` for Japanese if they feel too long.
+
+### Japanese text
+
+- Set `language` to Japanese and type normally, kanji included. With `TTS-Audio-Suite.patch`, every kanji word is read through the dictionary; without it the model read many kanji with Chinese readings (近く as *jinku*, 今夜 as *jinya*).
+- 私 reads as わたくし. Write `<私|わたし>` (or just わたし) for わたし. Any word can be given a reading this way: `<今夜|こんや>`.
+- A leading 「あ…」 tends to come out as a sigh (「ふぅ…」, 「うーん」).
 
 ## Troubleshooting
 
 | Problem | Fix |
 |---|---|
-| Speaks too fast | Fewer words per run, or a slower part of the recording. English: `duration_factor` 1.1-1.25. Thai: the slow-pace `voice_description` above. |
+| Long dead air in the middle, or speech too fast (English, Japanese) | The voice sample has long gaps. Move **Trim speaker clip** to 12 s of continuous speech ([pacing](#pacing)). |
+| Sentences run together (English, Japanese) | Put `[pause:0.8s]` between sentences, keep `duration_factor` at 1.0. |
+| Speaks too slowly with pause tags | Set `duration_factor` back to 1.0. |
+| Japanese kanji read with Chinese readings | Apply `TTS-Audio-Suite.patch`. If it is applied and still happens, ComfyUI is reusing an engine loaded before the patch: use **Unload Models** in ComfyUI or quit and restart it. |
+| Speaks too fast (Thai) | Fewer words per run, or a slower part of the recording, or the slow-pace `voice_description` above. |
 | Distorted English | Bypass the emotion sliders, turn `use_fp16` off, set `temperature` to 0.7. |
 | Last word cut off (English) | Only seen on IndexTTS-2: apply `TTS-Audio-Suite.patch` ([setup](setup.md#2-apply-the-patches)) and restart ComfyUI. |
 | "badcase" retries (Thai) | Raise `retry_threshold` to 15. |
@@ -68,5 +87,5 @@ python tools/queue_test.py english "Hello there." --voice my_voice.wav
 - `--voice` is a file in ComfyUI's input folder. `--start` is the second where the 12 s sample begins (default 1).
 - `--server` sets ComfyUI's address (default `http://127.0.0.1:8188`).
 - Run it with a Python that has `numpy` and `soundfile` (`pip install soundfile`).
-- The script uses its own fixed values, not the workflow files: Thai `cfg_value` 2.0 and an empty description; English IndexTTS-2.5, `temperature` 0.7, `use_fp16` off, no emotion input.
+- The script uses its own fixed values, not the workflow files: Thai `cfg_value` 2.0 and an empty description; English IndexTTS-2.5, `temperature` 0.7, `use_fp16` off, no emotion input, no pause tags.
 - Results are saved under `output/tts_tests/`.

@@ -65,7 +65,8 @@ Folders are inside `ComfyUI/models/`.
 1. Put your voice recording in ComfyUI's **input** folder and restart ComfyUI.
 2. Drag a workflow from [`workflows/`](../workflows) onto the canvas.
 3. On **Speaker voice**, pick your recording. The workflows ship with the placeholder name `my_voice.wav`.
-4. On **Trim speaker clip**, set `start_index` to the second where 12 s of clear, continuous speech begins.
+4. On **Trim speaker clip**, set `start_index` to the second where 12 s of clear, continuous speech begins: no silence at the start and no break longer than about 0.6 s. Long gaps in the sample cause long dead air in the result ([pacing](settings.md#pacing)).
+   For Japanese with the English workflow, set `language` on the engine to Japanese.
 5. Type the text and run. The result plays in the **Preview** node.
 
 What to record and which values to use: [settings](settings.md).
