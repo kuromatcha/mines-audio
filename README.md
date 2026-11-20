@@ -9,7 +9,7 @@ Clone a voice from a 12-second recording.
 | Workflow | Language | Engine |
 |---|---|---|
 | **VoxCPM2 Thai Voice Clone** | Thai | VoxCPM2 + SiangTTS-Thai LoRA |
-| **IndexTTS-2 English Voice Clone** | English | IndexTTS-2 (TTS-Audio-Suite) |
+| **IndexTTS-2.5 English Voice Clone** | English | IndexTTS-2.5 (TTS-Audio-Suite) |
 
 Both take a voice sample in any language, and both can pass the result through an RVC voice model (off by default).
 

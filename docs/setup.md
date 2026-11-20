@@ -43,7 +43,7 @@ git -C TTS-Audio-Suite apply path/to/mines-audio/patches/TTS-Audio-Suite.patch
 | `ComfyUI-VoxCPM2.patch` | Loads the LoRA at rank 64 / alpha 128, which is what SiangTTS uses (the node's default 32 / 16 loads it wrong). |
 | | Reshapes a 1-D attention mask that PyTorch 2.12 rejects (`IndexError`). |
 | | Saves the voice sample with `soundfile` instead of torchaudio, which needs torchcodec and FFmpeg (`ImportError`). |
-| `TTS-Audio-Suite.patch` | IndexTTS-2 cut off the last syllable. The patch pads the end with silence codes so the voice fades out. |
+| `TTS-Audio-Suite.patch` | IndexTTS-2 cut off the last syllable. The patch pads the end with silence codes so the voice fades out. It only changes IndexTTS-2; the workflow now uses IndexTTS-2.5, which does not drop the last code, so the patch matters only if you switch `model_path` back to IndexTTS-2. |
 
 Updating either node pack removes its patch. Apply it again afterwards.
 
@@ -55,7 +55,8 @@ Folders are inside `ComfyUI/models/`.
 |---|---|---|---|
 | VoxCPM2 | `tts/VoxCPM/VoxCPM2/` | `model.safetensors`, `audiovae.pth` | [openbmb/VoxCPM2](https://huggingface.co/openbmb/VoxCPM2) |
 | SiangTTS Thai LoRA | `loras/SiangTTS-Thai/` | `lora_weights.safetensors`, `lora_config.json` | |
-| IndexTTS-2 | `TTS/IndexTTS/` | downloaded automatically on the first run, about 8.3 GB | |
+| IndexTTS-2.5 | `TTS/IndexTTS/IndexTTS-2.5/` | downloaded automatically on the first run, about 5.5 GB (pinned revision `ba2480d`) | [IndexTeam/IndexTTS-2.5](https://huggingface.co/IndexTeam/IndexTTS-2.5) |
+| IndexTTS helpers | `TTS/IndexTTS/` (`w2v-bert-2.0`, `campplus`, `bigvgan_v2_22khz_80band_256x`) | downloaded automatically on the first run, about 2.8 GB | |
 
 ## 4. First run
 

@@ -27,7 +27,7 @@ def thai_prompt(a):
 def english_prompt(a):
     return {
         "engine": {"class_type": "IndexTTSEngineNode", "inputs": {
-            "model_path": "IndexTTS-2", "device": "cuda", "emotion_alpha": 1.0, "use_random": False,
+            "model_path": "IndexTTS-2.5", "device": "cuda", "emotion_alpha": 1.0, "use_random": False,
             "max_text_tokens_per_segment": 120, "interval_silence": 300, "temperature": 0.7, "top_p": 0.8,
             "top_k": 30, "do_sample": True, "length_penalty": 0.0, "num_beams": 3, "repetition_penalty": 10.0,
             "max_mel_tokens": 1500, "use_fp16": False, "use_deepspeed": False, "use_cuda_kernel": "auto"}},
