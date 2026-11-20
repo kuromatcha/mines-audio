@@ -13,6 +13,21 @@ index 3e2e7bbf..e9cd5782 100644
                  code_lens = torch.LongTensor(code_lens)
                  code_lens = code_lens.to(self.device)
                  if verbose:
+diff --git a/engines/index_tts/indextts/infer_v2_5.py b/engines/index_tts/indextts/infer_v2_5.py
+index 843c544c..fdd991cf 100644
+--- a/engines/index_tts/indextts/infer_v2_5.py
++++ b/engines/index_tts/indextts/infer_v2_5.py
+@@ -277,7 +277,9 @@ class IndexTTS2:
+         print(">> bigvgan weights restored from:", bigvgan_dir)
+ 
+         self.tokenizer = get_tokenizer(multilingual=True, model_dir=self.model_dir)
+-        self.ja_text_process = JapaneseG2PProcessor(g2p_ratio=0)
++        # local patch (mines-audio): convert every kanji word to its dictionary kana reading (fugashi + unidic-lite).
++        # With 0 the model reads kanji itself and often uses Chinese readings (近く -> jinku, 今夜 -> jinya).
++        self.ja_text_process = JapaneseG2PProcessor(g2p_ratio=1.0)
+         self.text_process = TextNormalizer(enable_glossary=True)
+         self.text_process.load()
+ 
 diff --git a/nodes/engines/index_tts_engine_node.py b/nodes/engines/index_tts_engine_node.py
 index 27582265..d02e3ae0 100644
 --- a/nodes/engines/index_tts_engine_node.py

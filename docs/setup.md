@@ -45,6 +45,7 @@ git -C TTS-Audio-Suite apply path/to/mines-audio/patches/TTS-Audio-Suite.patch
 | | Saves the voice sample with `soundfile` instead of torchaudio, which needs torchcodec and FFmpeg (`ImportError`). |
 | `TTS-Audio-Suite.patch` | IndexTTS-2 cut off the last syllable. The patch pads the end with silence codes so the voice fades out. It only changes IndexTTS-2; the workflow now uses IndexTTS-2.5, which does not drop the last code, so this part matters only if you switch `model_path` back to IndexTTS-2. |
 | | The **model_path** list showed every downloaded model twice (`IndexTTS-2.5` and `local:IndexTTS-2.5`). The patch hides the `local:` copy of the built-in names; the plain name loads the same folder without downloading. |
+| | Japanese: IndexTTS-2.5 read typed kanji itself and often used Chinese readings (近く as *jinku*, 今夜 as *jinya*). The patch turns on the model's own kanji-to-kana step for every word, using the installed Japanese dictionary (`fugashi` + `unidic-lite`). |
 
 Updating either node pack removes its patch. Apply it again afterwards.
 

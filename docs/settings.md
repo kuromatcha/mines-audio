@@ -37,6 +37,15 @@ The **In the workflow** column is what the files in [`workflows/`](../workflows)
 | `use_fp16` | on | **Open.** On 2.5 this means BF16. Earlier recommendation (on IndexTTS-2, FP16): off, because half precision added crackle. |
 | `seed` | fixed | |
 
+### Pacing (English and Japanese, IndexTTS-2.5)
+
+Measured over 4 seeds each.
+
+- **Voice sample:** use 12 s of continuous speech with no silence at the start and no break longer than about 0.6 s. A sample with 1-1.5 s gaps gave 14-18 s of dead air on 3 of 4 seeds, with the words squeezed into the rest.
+- **Sentence pauses:** IndexTTS-2.5 has no setting for the gap between sentences, and `max_text_tokens_per_segment` (minimum 50) is too large to split short text. Put `[pause:0.8s]` between sentences instead: gaps came out at 0.8-1.0 s on every seed.
+- **Speed with pause tags:** keep `duration_factor` at 1.0. Each tagged sentence is generated on its own and already comes out slower; 1.3 made the speech drag.
+- **Japanese:** set `language` to Japanese. With the patch, kanji are read through the dictionary. 私 reads as わたくし; write `<私|わたし>` (or kana) for わたし. Any word can be given a reading this way: `<今夜|こんや>`.
+
 ## Troubleshooting
 
 | Problem | Fix |
